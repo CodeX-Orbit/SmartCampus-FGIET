@@ -1,0 +1,78 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function userDoc() { return /databases/$(database)/documents/users/$(request.auth.uid); }
+    function isAdmin() {
+      return signedIn() && exists(userDoc()) && get(userDoc()).data.role == "admin";
+    }
+
+    match /users/{userId} {
+      allow create: if signedIn() && request.auth.uid == userId
+        && request.resource.data.role == "student";
+      allow read: if signedIn() && (request.auth.uid == userId || isAdmin());
+      allow update: if signedIn() && request.auth.uid == userId
+        && request.resource.data.role == resource.data.role;
+      allow delete: if isAdmin();
+
+      match /savedNotices/{noticeId} {
+        allow read, create, delete: if signedIn() && request.auth.uid == userId;
+        allow update: if false;
+      }
+    }
+
+    // Notices and events are visible to signed-in users; only admins can write.
+    match /notices/{noticeId} {
+      allow read: if signedIn();
+      allow create: if isAdmin()
+        && request.resource.data.keys().hasAll(["title", "description"])
+        && request.resource.data.title is string
+        && request.resource.data.title.size() > 0
+        && request.resource.data.title.size() <= 120
+        && request.resource.data.description is string
+        && request.resource.data.description.size() <= 1500;
+      allow update: if isAdmin()
+        && request.resource.data.title is string
+        && request.resource.data.title.size() > 0
+        && request.resource.data.description is string;
+      allow delete: if isAdmin();
+    }
+
+    match /events/{eventId} {
+      allow read: if signedIn();
+      allow create: if isAdmin()
+        && request.resource.data.keys().hasAll(["title", "date", "description"])
+        && request.resource.data.title is string
+        && request.resource.data.title.size() > 0
+        && request.resource.data.title.size() <= 120
+        && request.resource.data.date is string
+        && request.resource.data.description is string;
+      allow update: if isAdmin()
+        && request.resource.data.title is string
+        && request.resource.data.date is string;
+      allow delete: if isAdmin();
+    }
+
+    // Students can submit reports and resolve only their own reports.
+    // Admins can manage any report.
+    match /lostFound/{reportId} {
+      allow read: if signedIn();
+      allow create: if signedIn()
+        && request.resource.data.keys().hasAll(["createdBy", "status", "title", "description"])
+        && request.resource.data.keys().hasOnly(["title", "type", "category", "description", "status", "createdBy", "createdByName", "createdAt"])
+        && request.resource.data.createdBy == request.auth.uid
+        && request.resource.data.status == "Open"
+        && request.resource.data.title is string
+        && request.resource.data.title.size() > 0
+        && request.resource.data.title.size() <= 80
+        && request.resource.data.description is string
+        && request.resource.data.description.size() > 0
+        && request.resource.data.description.size() <= 500;
+      allow update: if isAdmin() || (signedIn()
+        && resource.data.createdBy == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["status", "resolvedAt"])
+        && request.resource.data.status == "Resolved");
+      allow delete: if isAdmin();
+    }
+  }
+}

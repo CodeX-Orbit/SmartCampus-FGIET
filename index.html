@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#5b4bdb" />
+  <title>SmartCampus — Campus, connected</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="authScreen" class="auth-screen">
+    <div class="auth-card">
+      <div class="brand-mark">SC</div>
+      <p class="eyebrow">FEROZE GANDHI INSTITUTE OF ENGINEERING AND TECHNOLOGY</p>
+      <h1>Welcome to <span>SmartCampus</span></h1>
+      <p class="muted">Your college, connected. Notices, events and campus updates in one place.</p>
+      <div class="portal-choice" aria-label="Choose portal">
+        <button type="button" class="portal-card active" id="studentPortalBtn"><strong>🎓 Student Portal</strong><span>Lost & Found, notices and campus resources</span></button>
+        <button type="button" class="portal-card" id="adminPortalBtn"><strong>🛡️ Admin Portal</strong><span>Manage notices, events and reports</span></button>
+      </div>
+      <p id="portalHint" class="portal-hint">Student sign-in · New accounts are created as students.</p>
+      <div class="auth-tabs">
+        <button class="tab active" id="loginTab" type="button">Sign in</button>
+        <button class="tab" id="signupTab" type="button">Create account</button>
+      </div>
+      <form id="authForm">
+        <label for="authName" id="nameLabel" class="hidden">Full name</label>
+        <input id="authName" class="hidden" autocomplete="name" placeholder="Your full name" />
+        <div id="signupAcademicFields" class="signup-academic-fields hidden">
+          <label for="authDepartment">Department</label>
+          <select id="authDepartment">
+            <option value="">Select your department</option>
+            <option value="Computer Science and Engineering">Computer Science and Engineering (CSE)</option>
+            <option value="Aeronautical Engineering">Aeronautical Engineering</option>
+            <option value="Electronics and Communication Engineering">Electronics and Communication Engineering (ECE)</option>
+            <option value="Mechanical Engineering">Mechanical Engineering (ME)</option>
+          </select>
+          <label for="authYear">Current year</label>
+          <select id="authYear">
+            <option value="">Select your year</option>
+            <option value="1st Year">1st Year</option>
+            <option value="2nd Year">2nd Year</option>
+            <option value="3rd Year">3rd Year</option>
+            <option value="4th Year">4th Year</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <label for="authEmail">College email</label>
+        <input id="authEmail" type="email" autocomplete="email" placeholder="you@example.com" required />
+        <label for="authPassword">Password</label>
+        <input id="authPassword" type="password" autocomplete="current-password" placeholder="At least 6 characters" minlength="6" required />
+        <button class="btn primary full" id="authSubmit" type="submit">Sign in</button>
+      </form>
+      <p class="auth-note">Admin access is restricted to accounts whose role is authorized in Firestore. Selecting Admin does not grant admin privileges.</p>
+      <p id="authMessage" class="message" role="status"></p>
+    </div>
+  </div>
+
+  <div id="appScreen" class="app hidden">
+    <aside class="sidebar">
+      <a class="brand" href="#" aria-label="SmartCampus home"><span class="brand-mark small">SC</span><span>SmartCampus<small>FGIET · STUDENT HUB</small></span></a>
+      <div class="side-label">WORKSPACE</div>
+      <nav class="nav">
+        <button class="nav-link active" data-view="dashboard"><span>▦</span> Dashboard</button>
+        <button class="nav-link" data-view="calendar"><span>▣</span> Events & deadlines</button>
+        <button class="nav-link" data-view="notices"><span>▤</span> Notice board</button>
+        <button class="nav-link" data-view="resources"><span>⌂</span> Campus resources</button>
+        <button class="nav-link" data-view="lostfound"><span>⌕</span> Lost & found</button>
+        <button class="nav-link hidden" id="adminNav" data-view="admin"><span>⚙</span> Admin panel</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="help-card"><div class="help-icon">✦</div><strong>Stay in the loop</strong><p>Check campus updates before you miss them.</p></div>
+        <button class="nav-link" id="themeToggle"><span>◐</span> Toggle dark mode</button>
+        <button class="nav-link" id="logoutBtn"><span>↪</span> Sign out</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div><p class="eyebrow">CAMPUS OVERVIEW</p><h2 id="pageTitle">Good to see you 👋</h2></div>
+        <div class="top-actions"><div class="date-chip" id="todayLabel"></div><div class="avatar" id="userAvatar">S</div></div>
+      </header>
+
+      <section id="dashboardView" class="view">
+        <div class="hero">
+          <div class="hero-copy"><span class="hero-pill">✦ ONE CAMPUS. ONE PLACE.</span><h1>Make campus life<br><span>simpler.</span></h1><p>Everything important happening on campus, organized for you.</p><button class="btn light" data-go="notices">Explore updates <span>→</span></button></div>
+          <div class="hero-art" aria-hidden="true"><div class="orb orb-one"></div><div class="orb orb-two"></div><div class="art-card"><span class="art-check">✓</span><div><b>You're up to date</b><small>Campus updates, organized.</small></div></div><div class="art-spark">✦</div></div>
+        </div>
+        <div class="stat-grid">
+          <article class="stat-card"><div class="stat-icon purple">▤</div><p>Published notices</p><strong id="statNotices">0</strong><small>Across all categories</small></article>
+          <article class="stat-card"><div class="stat-icon orange">▣</div><p>Upcoming events</p><strong id="statEvents">0</strong><small>Events and deadlines</small></article>
+          <article class="stat-card"><div class="stat-icon green">⌕</div><p>Open lost & found</p><strong id="statLost">0</strong><small>Items reported</small></article>
+          <article class="stat-card"><div class="stat-icon blue">☆</div><p>Saved notices</p><strong id="statSaved">0</strong><small>Your personal shortlist</small></article>
+        </div>
+        <div class="section-heading"><div><p class="eyebrow">DON'T MISS OUT</p><h3>Latest campus notices</h3></div><button class="text-btn" data-go="notices">View all →</button></div>
+        <div id="dashboardNotices" class="notice-grid"></div>
+        <div class="section-heading"><div><p class="eyebrow">COMING UP</p><h3>Events & deadlines</h3></div><button class="text-btn" data-go="calendar">Open calendar →</button></div>
+        <div id="dashboardEvents" class="event-list"></div>
+      </section>
+
+      <section id="noticesView" class="view hidden">
+        <div class="page-intro"><p class="eyebrow">CAMPUS BULLETIN</p><h1>Notice board</h1><p>Find announcements, academic updates and campus activities.</p></div>
+        <div class="toolbar"><input id="noticeSearch" type="search" placeholder="Search notices..." aria-label="Search notices"><select id="noticeCategory" aria-label="Filter by category"><option value="all">All categories</option><option>Academics</option><option>Events</option><option>General</option></select><select id="noticeSavedFilter" aria-label="Filter saved notices"><option value="all">All notices</option><option value="saved">Saved by me</option></select></div>
+        <div id="noticeResults" class="notice-grid"></div>
+      </section>
+
+      <section id="calendarView" class="view hidden">
+        <div class="page-intro"><p class="eyebrow">PLAN AHEAD</p><h1>Events & deadlines</h1><p>Keep track of campus events and important dates.</p></div>
+        <div class="calendar-layout"><div class="panel calendar-panel"><div class="panel-heading"><div><h3>Campus calendar</h3><p id="calendarTodayText">Today</p></div><span class="panel-icon">▣</span></div><div class="month-calendar"><div class="month-calendar-head"><button id="prevMonth" class="mini-btn" type="button" aria-label="Previous month">←</button><strong id="calendarMonthLabel">Month Year</strong><button id="nextMonth" class="mini-btn" type="button" aria-label="Next month">→</button></div><div class="calendar-weekdays"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div><div id="monthCalendarGrid" class="month-calendar-grid"></div><p class="calendar-legend"><span></span> Today <i></i> Event or deadline</p></div><div class="panel-heading upcoming-heading"><div><h3>Upcoming schedule</h3><p>Events and deadlines by date</p></div></div><div id="calendarEvents" class="event-list"></div></div><div class="panel tip-panel"><div class="tip-emoji">✦</div><h3>Plan your week</h3><p>Save notices that matter to you and check this schedule regularly.</p><div class="tip-line"><span>✓</span> Review deadlines early</div><div class="tip-line"><span>✓</span> Check event details</div><div class="tip-line"><span>✓</span> Keep your team updated</div></div></div>
+      </section>
+
+      <section id="resourcesView" class="view hidden">
+        <div class="page-intro"><p class="eyebrow">YOUR CAMPUS TOOLKIT</p><h1>Campus resources</h1><p>Quick access to common student needs. Contact details and opening hours should be confirmed with official FGIET channels.</p></div>
+        <div class="notice-grid resource-grid">
+          <article class="notice-card"><div class="card-top"><span class="category-pill">ACADEMICS</span><span>📚</span></div><h4>Study & library</h4><p class="description">For verified library timings, borrowing rules and study facilities, check the official college website or contact the college office.</p><div class="card-footer"><span>Official information</span><a class="text-btn" href="https://fgiet.ac.in/" target="_blank" rel="noopener">College website ↗</a></div></article>
+          <article class="notice-card"><div class="card-top"><span class="category-pill events">CAMPUS LIFE</span><span>🎯</span></div><h4>Clubs & activities</h4><p class="description">Student activities will appear here when an authorized admin publishes a verified event.</p><div class="card-footer"><span>Live campus schedule</span><button class="text-btn" data-go="calendar">View events →</button></div></article>
+          <article class="notice-card"><div class="card-top"><span class="category-pill general">HELP DESK</span><span>🧭</span></div><h4>Campus help & facilities</h4><p class="description">Use the college's official website for current office contacts and facility information. SmartCampus does not invent faculty names or phone numbers.</p><div class="card-footer"><span>Official contact source</span><a class="text-btn" href="https://fgiet.ac.in/" target="_blank" rel="noopener">Open FGIET ↗</a></div></article>
+          <article class="notice-card"><div class="card-top"><span class="category-pill">LOST PROPERTY</span><span>🔎</span></div><h4>Lost & found desk</h4><p class="description">Report missing or found belongings and search recent reports. Avoid posting phone numbers or sensitive ID-card information publicly.</p><div class="card-footer"><span>Community help</span><button class="text-btn" data-go="lostfound">Open lost & found →</button></div></article>
+          <article class="notice-card"><div class="card-top"><span class="category-pill events">SCHEDULE</span><span>🗓️</span></div><h4>Events & deadlines</h4><p class="description">Review upcoming events, academic reminders and important dates in one place.</p><div class="card-footer"><span>Plan ahead</span><button class="text-btn" data-go="calendar">Open calendar →</button></div></article>
+          <article class="notice-card"><div class="card-top"><span class="category-pill general">PERSONAL</span><span>☆</span></div><h4>Saved notices</h4><p class="description">Bookmark notices from the notice board using the star icon. Your saved list is tied to your student account.</p><div class="card-footer"><span>Personal shortlist</span><button class="text-btn" data-go="notices">Browse notices →</button></div></article>
+        </div>
+        <p class="form-footnote">Notices, events and lost-and-found reports shown here come from the SmartCampus database. Official information must be verified before an authorized admin publishes it. <a href="https://fgiet.ac.in/" target="_blank" rel="noopener">FGIET official website ↗</a></p>
+      </section>
+
+      <section id="lostfoundView" class="view hidden">
+        <div class="page-intro"><p class="eyebrow">HELP YOUR CAMPUS</p><h1>Lost & found</h1><p>Report a lost item or help someone reunite with theirs.</p></div>
+        <div class="lost-layout"><form id="lostForm" class="panel form-panel"><div class="panel-heading"><div><h3>Report an item</h3><p>Share only details needed to identify it.</p></div><span class="panel-icon">⌕</span></div><label for="itemTitle">Item name</label><input id="itemTitle" maxlength="80" placeholder="e.g. Blue water bottle" required><label for="itemType">Report type</label><select id="itemType"><option>Lost</option><option>Found</option></select><label for="itemCategory">Category</label><select id="itemCategory"><option>Accessories</option><option>Electronics</option><option>Books & stationery</option><option>ID card</option><option>Other</option></select><label for="itemDescription">Description</label><textarea id="itemDescription" maxlength="500" rows="3" placeholder="Colour, approximate location, or identifying details..." required></textarea><button class="btn primary full" type="submit">Submit report</button><p class="form-footnote">Don't post phone numbers, home addresses, passwords or sensitive ID details.</p><p id="lostMessage" class="message" role="status"></p></form><div class="panel"><div class="panel-heading"><div><h3>Recent reports</h3><p>Latest items shared by students</p></div><span class="panel-icon">↗</span></div><input id="lostSearch" type="search" placeholder="Search items..." aria-label="Search lost and found"><div id="lostResults" class="lost-results"></div></div></div>
+      </section>
+
+      <section id="adminView" class="view hidden">
+        <div class="page-intro"><p class="eyebrow">MANAGE CAMPUS CONTENT</p><h1>Admin panel</h1><p>Publish notices and schedule events for students.</p></div>
+        <div class="admin-grid">
+          <form id="noticeForm" class="panel form-panel"><div class="panel-heading"><div><h3 id="noticeFormTitle">Publish a notice</h3><p>Fields marked required must be filled.</p></div><span class="panel-icon">▤</span></div><input id="editNoticeId" type="hidden"><label for="adminNoticeTitle">Notice title</label><input id="adminNoticeTitle" maxlength="120" required placeholder="Enter a clear title"><label for="adminNoticeCategory">Category</label><select id="adminNoticeCategory"><option>Academics</option><option>Events</option><option>General</option></select><label for="adminNoticeSource">Information source</label><select id="adminNoticeSource"><option value="Admin verified update">Admin verified update</option><option value="Official FGIET website">Official FGIET website</option></select><label for="adminNoticeDescription">Description</label><textarea id="adminNoticeDescription" maxlength="1500" rows="4" required placeholder="Write the announcement..."></textarea><label for="adminNoticeDate">Relevant date (optional)</label><input id="adminNoticeDate" type="date"><div class="button-row"><button class="btn primary" type="submit">Save notice</button><button class="btn secondary hidden" id="cancelNoticeEdit" type="button">Cancel edit</button></div><p id="adminNoticeMessage" class="message" role="status"></p></form>
+          <form id="eventForm" class="panel form-panel"><div class="panel-heading"><div><h3 id="eventFormTitle">Add event or deadline</h3><p>Make dates and locations clear.</p></div><span class="panel-icon">▣</span></div><input id="editEventId" type="hidden"><label for="adminEventTitle">Event title</label><input id="adminEventTitle" maxlength="120" required placeholder="e.g. Club orientation"><label for="adminEventType">Type</label><select id="adminEventType"><option>Event</option><option>Deadline</option></select><label for="adminEventDate">Date</label><input id="adminEventDate" type="date" required><label for="adminEventLocation">Location</label><input id="adminEventLocation" maxlength="120" placeholder="Venue or online"><label for="adminEventDescription">Details</label><textarea id="adminEventDescription" maxlength="1000" rows="3" required placeholder="What should students know?"></textarea><div class="button-row"><button class="btn primary" type="submit">Save event</button><button class="btn secondary hidden" id="cancelEventEdit" type="button">Cancel edit</button></div><p id="adminEventMessage" class="message" role="status"></p></form>
+        </div>
+        <div class="admin-lists"><div class="panel"><div class="panel-heading"><div><h3>Manage notices</h3><p>Edit or remove a published notice.</p></div></div><div id="adminNoticeList" class="manage-list"></div></div><div class="panel"><div class="panel-heading"><div><h3>Manage schedule</h3><p>Edit or remove an event.</p></div></div><div id="adminEventList" class="manage-list"></div></div></div>
+      </section>
+      <footer class="footer"><span>© 2026 SmartCampus · Feroze Gandhi Institute of Engineering and Technology</span><span>Built for a more connected campus ✦</span></footer>
+    </main>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
