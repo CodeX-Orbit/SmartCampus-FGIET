@@ -1,0 +1,41 @@
+# 🚀 SmartCampus — FGIET
+
+### Built by Team CodeX 💻
+
+A smart campus portal designed for **Feroze Gandhi Institute of Engineering and Technology (FGIET)** to make campus information and student services easier to access.
+
+## 🌐 Live Demo
+https://smart-campus-8b6f7.firebaseapp.com?utm_source=chatgpt.com
+
+## ✨ Features
+
+- 🎓 Separate Student and Admin portals
+- 📢 Campus notices and announcements
+- 📅 Events and important deadlines
+- 🔎 Lost & Found reporting
+- 📚 Campus resources: Library, Labs, Clubs and Placement Cell
+- 🔐 Firebase Authentication
+- ☁️ Firebase Firestore integration
+
+## 🛠️ Tech Stack
+
+- HTML
+- CSS
+- JavaScript
+- Firebase Authentication
+- Cloud Firestore
+- Firebase Hosting
+
+## 👥 Team
+
+**Team Name:** CodeX
+
+**Project:** SmartCampus — FGIET
+
+## 🎯 Goal
+
+To build a simple, accessible and secure campus portal that helps students find important campus information in one place.
+
+## 📌 Project Status
+
+Under development. Features and data may change as the project evolves.
